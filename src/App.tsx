@@ -22,8 +22,28 @@ const initialTodos: Todo[] = [
 function App() {
   const [todos, setTodos] = useState<Todo[]>(initialTodos);
   return (
-    <div className="bg-gray-900 min-h-screen text-white p-4">
-      <h1 className="text-center text-3xl font-bold mb-8">ToDo List</h1>
+    <div className="bg-gray-900 min-h-screen flex flex-col items-center pt-8">
+      <div className="w-full max-w-md">
+        <h1 className="text-center text-3xl font-bold mb-8 text-sky-400">
+          ToDo List
+        </h1>
+        <ul className="space-y-3">
+          {todos.map((todo) => (
+            <li
+              key={todo.id}
+              className="bg-gray-800 p-4 rounded-lg flex items-center justify-between"
+            >
+              <span
+                className={`text-lg ${
+                  todo.completed ? "line-through text-gray-500" : ""
+                }`}
+              >
+                {todo.text}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
