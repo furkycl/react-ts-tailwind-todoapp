@@ -29,6 +29,9 @@ function App() {
       )
     );
   };
+  const handleDeleteTodo = (id: string) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
   return (
     <div className="bg-gray-900 min-h-screen flex flex-col items-center pt-8">
       <div className="w-full max-w-md">
@@ -37,7 +40,12 @@ function App() {
         </h1>
         <ul className="space-y-3">
           {todos.map((todo) => (
-            <TodoItem key={todo.id} todo={todo} onToggle={handleToggleTodo} />
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              onToggle={handleToggleTodo}
+              onDelete={handleDeleteTodo}
+            />
           ))}
         </ul>
       </div>
