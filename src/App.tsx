@@ -3,6 +3,7 @@ import type { Todo } from "./types";
 import TodoItem from "./components/TodoItem";
 import AddTodoForm from "./components/AddTodoForm";
 import EmptyState from "./components/EmptyState";
+import TodoFooter from "./components/TodoFooter";
 
 const initialTodos: Todo[] = [
   {
@@ -54,6 +55,11 @@ function App() {
     };
     setTodos([newTodo, ...todos]);
   };
+  const handleClearCompleted = () => {
+    setTodos(todos.filter((todo) => !todo.completed));
+  };
+  const activeCount = todos.filter((todos) => !todos.completed).length;
+  const completedCount = todos.length - activeCount;
   return (
     <div className="bg-gray-900 min-h-screen flex justify-center items-start pt-16">
       <div className="w-full max-w-lg bg-gray-800 shadow-2xl rounded-xl p-6">
@@ -77,6 +83,13 @@ function App() {
             <EmptyState />
           )}
         </div>
+        {todos.length > 0 && (
+          <TodoFooter
+            activeCount={activeCount}
+            completedCount={completedCount}
+            onClearCompleted={handleClearCompleted}
+          />
+        )}
       </div>
     </div>
   );
