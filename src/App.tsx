@@ -1,44 +1,22 @@
-import { useState, useEffect } from "react";
 import type { Todo, FilterType } from "./types";
+import { useState } from "react";
 import TodoItem from "./components/TodoItem";
 import AddTodoForm from "./components/AddTodoForm";
 import EmptyState from "./components/EmptyState";
 import TodoFooter from "./components/TodoFooter";
 import TodoFilter from "./components/TodoFilter";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
 const initialTodos: Todo[] = [
-  {
-    id: "01",
-    text: "React Projesini Tamamla",
-    completed: false,
-  },
-  {
-    id: "02",
-    text: "TypeScript Öğren.",
-    completed: true,
-  },
-  {
-    id: "03",
-    text: "Tailwind ile CSS ver.",
-    completed: false,
-  },
+  { id: "1", text: "Learn React", completed: true },
+  { id: "2", text: "Build a project", completed: false },
 ];
 
 const STORAGE_KEY = "todos_list";
 
 function App() {
-  const [todos, setTodos] = useState<Todo[]>(() => {
-    const savedTodos = localStorage.getItem(STORAGE_KEY);
-    if (savedTodos) {
-      return JSON.parse(savedTodos);
-    } else {
-      return initialTodos;
-    }
-  });
+  const [todos, setTodos] = useLocalStorage<Todo[]>(STORAGE_KEY, initialTodos);
   const [filter, setFilter] = useState<FilterType>("all");
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-  }, [todos]);
   const handleToggleTodo = (id: string) => {
     setTodos(
       todos.map((todo) =>
