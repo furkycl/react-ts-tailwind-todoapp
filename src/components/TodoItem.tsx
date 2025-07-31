@@ -18,24 +18,27 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete }) => {
   return (
     <li
       onClick={handleToggleClick}
-      className="bg-gray-800 p-4 rounded-lg flex items-center justify-between cursor-pointer hover:bg-gray-700 transition-colors"
+      className="w-full bg-gray-800 p-4 rounded-lg flex items-center justify-between gap-4 cursor-pointer hover:bg-gray-700 transition-colors"
     >
-      <span
-        className={`text-lg ${
-          todo.completed ? "line-through text-gray-500" : ""
-        }`}
-      >
-        {todo.text}
-      </span>
-      <div
-        className={`w-6 h-6 rounded-full border-2 ${
-          todo.completed ? "bg-sky-500 border-sky-500" : "border-gray-500"
-        }`}
-      />
+      <div className="flex items-center flex-grow min-w-0">
+        <div
+          className={`flex-shrink-0 w-6 h-6 rounded-full border-2 ${
+            todo.completed ? "bg-sky-500 border-sky-500" : "border-gray-500"
+          }`}
+        />
+        <span
+          className={`ml-4 text-lg text-gray-200 break-all ${
+            todo.completed ? "line-through text-gray-500" : ""
+          }`}
+        >
+          {todo.text}
+        </span>
+      </div>
+
       <button
         onClick={handleDeleteClick}
-        aria-label={`Delete todo: ${todo.text}`} //accessibility
-        className="text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
+        aria-label={`Delete todo: ${todo.text}`}
+        className="flex-shrink-0 text-gray-500 hover:text-red-500 transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
