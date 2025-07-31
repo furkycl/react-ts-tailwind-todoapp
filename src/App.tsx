@@ -22,6 +22,13 @@ const initialTodos: Todo[] = [
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>(initialTodos);
+  const handleToggleTodo = (id: string) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  };
   return (
     <div className="bg-gray-900 min-h-screen flex flex-col items-center pt-8">
       <div className="w-full max-w-md">
@@ -30,7 +37,7 @@ function App() {
         </h1>
         <ul className="space-y-3">
           {todos.map((todo) => (
-            <TodoItem key={todo.id} todo={todo} />
+            <TodoItem key={todo.id} todo={todo} onToggle={handleToggleTodo} />
           ))}
         </ul>
       </div>
