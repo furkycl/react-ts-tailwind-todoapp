@@ -3,8 +3,7 @@ React + TypeScript ToDo List
 ![alt text](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![alt text](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![alt text](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-<!-- TODO: Add a screenshot of the application -->
-![alt text](./screenshot.png)
+
 About The Project
 This is a project I built to create a feature-rich, modern ToDo list application from the ground up. My goal was to go beyond a basic tutorial and build something that felt like a real, polished product. I focused on using a modern tech stack and implementing best practices for code structure, state management, and user experience.
 Features
