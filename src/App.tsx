@@ -58,7 +58,7 @@ function App() {
     setTodos(items);
   };
   return (
-    <div className="bg-gray-900 min-h-screen flex justify-center items-start pt-16">
+    <div className="bg-gray-900 min-h-screen flex justify-center items-start pt-16 pb-16">
       <div className="w-full max-w-lg bg-gray-800 shadow-2xl rounded-xl p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-white">My Tasks</h1>
