@@ -8,6 +8,8 @@ import TodoFilter from "./components/TodoFilter";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import type { DropResult } from "@hello-pangea/dnd";
+import WelcomeModal from "./components/WelcomeModal";
+import { useEffect } from "react";
 
 const initialTodos: Todo[] = [
   { id: "1", text: "Learn React", completed: true },
@@ -15,10 +17,22 @@ const initialTodos: Todo[] = [
 ];
 
 const STORAGE_KEY = "todos_list";
+const WELCOME_KEY = "has_visited_todo_app";
 
 function App() {
   const [todos, setTodos] = useLocalStorage<Todo[]>(STORAGE_KEY, initialTodos);
   const [filter, setFilter] = useState<FilterType>("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  useEffect(() => {
+    const hasVisited = localStorage.getItem(WELCOME_KEY);
+    if (!hasVisited) {
+      setIsModalOpen(true);
+    }
+  }, []);
+  const handleCloseModal = () => {
+    localStorage.setItem(WELCOME_KEY, "true");
+    setIsModalOpen(false);
+  };
   const handleToggleTodo = (id: string) => {
     setTodos(
       todos.map((todo) =>
@@ -58,63 +72,66 @@ function App() {
     setTodos(items);
   };
   return (
-    <div className="bg-gray-900 min-h-screen flex justify-center items-start pt-16 pb-16">
-      <div className="w-full max-w-lg bg-gray-800 shadow-2xl rounded-xl p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-white">My Tasks</h1>
-          <TodoFilter currentFilter={filter} onFilterChange={setFilter} />
-        </div>
-        <AddTodoForm onAdd={handleAddNewTodo} />
-        <div className="mt-6">
-          {filteredTodos.length > 0 ? (
-            <DragDropContext onDragEnd={handleOnDragEnd}>
-              <Droppable droppableId="todos">
-                {(provided) => (
-                  <ul
-                    className="space-y-3"
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                  >
-                    {filteredTodos.map((todo, index) => (
-                      <Draggable
-                        key={todo.id}
-                        draggableId={todo.id}
-                        index={index}
-                        isDragDisabled={filter !== "all"}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <TodoItem
-                              todo={todo}
-                              onToggle={handleToggleTodo}
-                              onDelete={handleDeleteTodo}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </ul>
-                )}
-              </Droppable>
-            </DragDropContext>
-          ) : (
-            <EmptyState />
+    <>
+      {isModalOpen && <WelcomeModal onClose={handleCloseModal} />}
+      <div className="bg-gray-900 min-h-screen flex justify-center items-start pt-16 pb-16">
+        <div className="w-full max-w-lg bg-gray-800 shadow-2xl rounded-xl p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-3xl font-bold text-white">My Tasks</h1>
+            <TodoFilter currentFilter={filter} onFilterChange={setFilter} />
+          </div>
+          <AddTodoForm onAdd={handleAddNewTodo} />
+          <div className="mt-6">
+            {filteredTodos.length > 0 ? (
+              <DragDropContext onDragEnd={handleOnDragEnd}>
+                <Droppable droppableId="todos">
+                  {(provided) => (
+                    <ul
+                      className="space-y-3"
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                    >
+                      {filteredTodos.map((todo, index) => (
+                        <Draggable
+                          key={todo.id}
+                          draggableId={todo.id}
+                          index={index}
+                          isDragDisabled={filter !== "all"}
+                        >
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <TodoItem
+                                todo={todo}
+                                onToggle={handleToggleTodo}
+                                onDelete={handleDeleteTodo}
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </ul>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            ) : (
+              <EmptyState />
+            )}
+          </div>
+          {todos.length > 0 && (
+            <TodoFooter
+              activeCount={activeCount}
+              completedCount={completedCount}
+              onClearCompleted={handleClearCompleted}
+            />
           )}
         </div>
-        {todos.length > 0 && (
-          <TodoFooter
-            activeCount={activeCount}
-            completedCount={completedCount}
-            onClearCompleted={handleClearCompleted}
-          />
-        )}
       </div>
-    </div>
+    </>
   );
 }
 
