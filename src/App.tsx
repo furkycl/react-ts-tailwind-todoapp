@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Todo } from "./types";
+import TodoItem from "./components/TodoItem";
 
 const initialTodos: Todo[] = [
   {
@@ -29,18 +30,7 @@ function App() {
         </h1>
         <ul className="space-y-3">
           {todos.map((todo) => (
-            <li
-              key={todo.id}
-              className="bg-gray-800 p-4 rounded-lg flex items-center justify-between"
-            >
-              <span
-                className={`text-lg ${
-                  todo.completed ? "line-through text-gray-500" : ""
-                }`}
-              >
-                {todo.text}
-              </span>
-            </li>
+            <TodoItem key={todo.id} todo={todo} />
           ))}
         </ul>
       </div>
