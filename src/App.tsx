@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import type { Todo } from "./types";
+import type { Todo, FilterType } from "./types";
 import TodoItem from "./components/TodoItem";
 import AddTodoForm from "./components/AddTodoForm";
 import EmptyState from "./components/EmptyState";
 import TodoFooter from "./components/TodoFooter";
+import TodoFilter from "./components/TodoFilter";
 
 const initialTodos: Todo[] = [
   {
@@ -34,6 +35,7 @@ function App() {
       return initialTodos;
     }
   });
+  const [filter, setFilter] = useState<FilterType>("all");
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
   }, [todos]);
@@ -60,17 +62,25 @@ function App() {
   };
   const activeCount = todos.filter((todos) => !todos.completed).length;
   const completedCount = todos.length - activeCount;
+
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "active") return !todo.completed;
+    if (filter === "completed") return todo.completed;
+    return true;
+  });
+
   return (
     <div className="bg-gray-900 min-h-screen flex justify-center items-start pt-16">
       <div className="w-full max-w-lg bg-gray-800 shadow-2xl rounded-xl p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-white">My Tasks</h1>
+          <TodoFilter currentFilter={filter} onFilterChange={setFilter} />
         </div>
         <AddTodoForm onAdd={handleAddNewTodo} />
         <div className="mt-6">
           {todos.length > 0 ? (
             <ul className="space-y-3">
-              {todos.map((todo) => (
+              {filteredTodos.map((todo) => (
                 <TodoItem
                   key={todo.id}
                   todo={todo}
