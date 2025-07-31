@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Todo } from "./types";
 import TodoItem from "./components/TodoItem";
+import AddTodoForm from "./components/AddTodoForm";
 
 const initialTodos: Todo[] = [
   {
@@ -32,12 +33,21 @@ function App() {
   const handleDeleteTodo = (id: string) => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
+  const handleAddNewTodo = (text: string) => {
+    const newTodo: Todo = {
+      id: Date.now().toString(),
+      text: text,
+      completed: false,
+    };
+    setTodos([newTodo, ...todos]);
+  };
   return (
     <div className="bg-gray-900 min-h-screen flex flex-col items-center pt-8">
       <div className="w-full max-w-md">
         <h1 className="text-center text-3xl font-bold mb-8 text-sky-400">
           ToDo List
         </h1>
+        <AddTodoForm onAdd={handleAddNewTodo} />
         <ul className="space-y-3">
           {todos.map((todo) => (
             <TodoItem
