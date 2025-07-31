@@ -6,6 +6,8 @@ import EmptyState from "./components/EmptyState";
 import TodoFooter from "./components/TodoFooter";
 import TodoFilter from "./components/TodoFilter";
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import type { DropResult } from "@hello-pangea/dnd";
 
 const initialTodos: Todo[] = [
   { id: "1", text: "Learn React", completed: true },
@@ -46,7 +48,15 @@ function App() {
     if (filter === "completed") return todo.completed;
     return true;
   });
+  const handleOnDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
 
+    const items = Array.from(todos);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setTodos(items);
+  };
   return (
     <div className="bg-gray-900 min-h-screen flex justify-center items-start pt-16">
       <div className="w-full max-w-lg bg-gray-800 shadow-2xl rounded-xl p-6">
@@ -56,17 +66,42 @@ function App() {
         </div>
         <AddTodoForm onAdd={handleAddNewTodo} />
         <div className="mt-6">
-          {todos.length > 0 ? (
-            <ul className="space-y-3">
-              {filteredTodos.map((todo) => (
-                <TodoItem
-                  key={todo.id}
-                  todo={todo}
-                  onToggle={handleToggleTodo}
-                  onDelete={handleDeleteTodo}
-                />
-              ))}
-            </ul>
+          {filteredTodos.length > 0 ? (
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+              <Droppable droppableId="todos">
+                {(provided) => (
+                  <ul
+                    className="space-y-3"
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {filteredTodos.map((todo, index) => (
+                      <Draggable
+                        key={todo.id}
+                        draggableId={todo.id}
+                        index={index}
+                        isDragDisabled={filter !== "all"}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <TodoItem
+                              todo={todo}
+                              onToggle={handleToggleTodo}
+                              onDelete={handleDeleteTodo}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </ul>
+                )}
+              </Droppable>
+            </DragDropContext>
           ) : (
             <EmptyState />
           )}
